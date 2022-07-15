@@ -1,0 +1,19 @@
+[
+  
+  {
+    "title": "Forward Google Analytics events to Optimizely",
+    "url": "/posts/forward-google-analytics-events/",
+    "categories": "INTEGRATIONS, ANALYTICS",
+    "tags": "Google Analytics, Events",
+    "date": "2022-07-12 00:00:00 -0500",
+    
+
+
+
+
+
+    "snippet": "If you already have an analytics tool running on your website, it may be counter-productive to re-configure your key events every time you add a new tool. Therefore, there is value in re-purposing your existing event tracking implementation for any new analytics tool you want to add on your website.This is why in this tutorial we will see how to re-use Google Analytics event and forward them to Optimizely.Send Google Analytics events to Optimizely WebThis integration will forward GA events that exist in a whitelist and send them straight to Optimizely Web.Step 1: Add this sample code to Optimizely’s Project Javascript.Optimizely’s Project Javascript allows you to run custom Javascript code on any page where the Optimizely snippet is present.window[\"optimizely\"].push({  \"type\": \"addListener\",  \"filter\": {    \"type\": \"lifecycle\",    \"name\": \"initialized\"  },  \"handler\": function(event) {  var utils = optimizely.get('utils');utils.waitUntil(function() {  return window.hasOwnProperty('ga') &amp;&amp; ga.hasOwnProperty('getAll');}).then(function() {  var whitelist = \"add_to_cart,add_to_wishlist\"; // EDIT HERE TO ADD YOUR EVENTS    var eventWhitelist = whitelist.split(\",\");    // Modifies sendHitTask to log the model's \"hitPayload\" field.    ga.getAll()[0].set('customTask', function(model) {      if(model.get('&amp;t') === 'pageview') {        action = 'pageview';      }      else {        action = model.get('eventAction');        category = model.get('eventCategory');        label = model.get('eventLabel');      }      // We replicate based on GA's event label      if (eventWhitelist.length &gt; -1 &amp;&amp; eventWhitelist.indexOf(action) &gt; -1){            window.optimizely.push({                \"type\": \"event\",                \"eventName\": action,                \"tags\": {}            });                        }     });});  }});Step 2: Edit the whitelist to authorise specific eventsBy default, the integration only forwards events if the event names are part of a whitelist. Line 14, you will see a variable called whitelist which contains a comma-separated list of the whitelisted events.Edit this variable to include a comma-separated list of the Google Analytics event names you’d like to forward to Optimizely.Step 3: Create the event names in OptimizelyFor Optimizely to recognise the Google Analytics events, the events need to be re-created in the Optimizely dashboard. This is a one-off step. Go to Optimizely, create a custom event that uses the same event name as your Google Analytics event.Step 4: Benefit!That’s it, now Optimizely Web automatically receives Google Analytics events.Send Google Analytics events to Optimizely FSComing soon!"
+  }
+  
+]
+
